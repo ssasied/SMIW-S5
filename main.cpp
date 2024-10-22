@@ -3,7 +3,7 @@
 // Program template for C lab 21
 // Please fill in this information before starting coding
 // Authors:
-//1.Stanis³aw S¹siedzki
+//1.StanisÂ³aw SÂ¹siedzki
 //2.
 //3.
 //4.
@@ -45,7 +45,7 @@ uint8_t const TAB_ROM[] PROGMEM = {
 //-----this empty table example-----uncomment to test---------------
 // uint8_t const TAB_ROM[] PROGMEM = { 0x00, 0x00};
 //Microprocessor and Embedded Systems - Laboratory
-//© 2022 v2.2 AVR Microcontrollers – part I Page 26
+//Â© 2022 v2.2 AVR Microcontrollers â€“ part I Page 26
 //---------------------------------------------------------------------
 
 void print_hex(unsigned char value) {
@@ -70,7 +70,7 @@ int main (void)
 		if((TAB_RAM[i]&1)==0){
 			previous=pgm_read_byte(&TAB_ROM[j]);
 			TAB_RAM[i] = previous;
-			if(!previous|pgm_read_byte(&TAB_ROM[++j])){
+			if(!(previous|pgm_read_byte(&TAB_ROM[++j]))){
 				j=0;
 			}
 			
