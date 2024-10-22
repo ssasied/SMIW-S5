@@ -41,12 +41,12 @@ ldi XH, HIGH(TAB_RAM)
 ldi R20, xlength ; Counter for TAB_RAM
 
 LOOP_RESET:
-ldi YL, LOW(TAB_ROM); Pointer to TAB_ROM
-ldi YH, HIGH(TAB_ROM) 
+ldi ZL, LOW(TAB_ROM); Pointer to TAB_ROM
+ldi ZH, HIGH(TAB_ROM) 
 ldi r21, 0xFF ; Reset last byte
 
 LOOP:
-ld r24, Y             ; Load TAB_ROM value into r24
+elpm r24, Z            ; Load TAB_ROM value into r24
 or r24, r21           ; r21 - last byte  - if both are zero result will be zero
 cpi r24, 0x00         ; Compare r24 with 0x00
 breq LOOP_RESET       ; If r24 is 0, reset the loop
@@ -58,7 +58,7 @@ and r24, r22          ; And to check if last bit is 0;
 brne skip             ; If the result is not zero (odd number), skip the copy operation
 
 ; Copy TAB_ROM to TAB_RAM
-ld r21, Y+
+elpm r21, Z+
 mov r25, r21           ; Load the value from TAB_ROM into r25 and post-increment pointer Y
 st X+, r25            ; Store r25 into TAB_RAM and increment pointer X
 
