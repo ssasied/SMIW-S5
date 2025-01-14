@@ -1,0 +1,66 @@
+.nolist ;quartz assumption 4Mhz
+.include "m2560def.inc"
+ 
+//////////////////////////////////////////////////////////////////////////////
+// Change this variable to test different values from 0 to 100
+.equ xlength =  100
+;//////////////////////////////////////////////////////////////////////////////
+; EEPROM - data non-volatile memory segment Please don't use
+.ESEG 
+
+;//////////////////////////////////////////////////////////////////////////////
+; StaticRAM - data memory.segment
+.DSEG 
+.ORG 0x200; may be omitted this is the default value
+; Destination table (xlengthx bytes). 
+TAB_RAM: .BYTE xlength
+ 
+;//////////////////////////////////////////////////////////////////////////////
+; CODE - Program memory segment
+.CSEG  
+.org 0x0000 ; may be omitted this is default value 
+jmp RESET   ; Reset Handler
+
+RESET:
+    cli         ; disable all interrupts
+
+// Set stack pointer to the top of RAM
+    ldi R17, HIGH(RAMEND)
+    out SPH, R17
+    ldi R17, LOW(RAMEND)
+    out SPL, R17 
+    
+// Setup data direction for PORTB (LED pins) and PORTC
+    ldi R16, 0xFF       ; Set PORTB as output (0xFF = all bits high)
+    out DDRB, R16
+    ldi R16, 0x00       ; Set PORTC as input (0x00 = all bits low)
+    out DDRC, R16
+
+    ldi R16, 0x00       ; Set all PORTB pins low
+    out PORTB, R16
+    ldi R16, 0x00       ; Set all PORTC pins low
+    out PORTC, R16
+
+    ldi R20, xlength    ; Counter for TAB_RAM
+
+WAIT:
+    in R16, PINA
+    cpi R16, 0xFF       ; Wait for button press or trigger condition
+    brne WAIT
+
+LOOP:
+    ; Toggle PORTB0 (turn LED on/off)
+    ldi R16, 0x01       ; Set PORTB0 high (LED on)
+    out PORTB, R16
+    call delay_1s       ; Call delay (1 second)
+
+    ldi R16, 0x00       ; Set PORTB0 low (LED off)
+    out PORTB, R16
+
+    dec R20             ; Decrement counter
+    brne LOOP           ; Repeat loop if counter not zero
+
+    rjmp END            ; Jump to end
+  
+End:
+    rjmp End
